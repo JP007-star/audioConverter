@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text-to-Audio Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        input, select, textarea, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text-to-Audio Converter</h1>
+        <form id="textToAudioForm">
+            <label for="text">Text:</label>
+            <textarea id="text" name="text" rows="4" required></textarea>
+
+            <label for="voice">Voice:</label>
+            <select id="voice" name="voice">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="ta">Tamil</option>
+                <!-- Add more options as needed -->
+            </select>
+
+            <label for="speed">Speed:</label>
+            <select id="speed" name="speed">
+                <option value="0.25">0.25x</option>
+                <option value="0.5">0.5x</option>
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1x</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2x</option>
+            </select>
+
+            <button type="submit">Convert to Audio</button>
+        </form>
+
+        <h2>Audio Output</h2>
+        <audio id="audioPlayer" controls></audio>
+
+        <div id="responseMessage"></div>
+    </div>
+
+    <script>
+        document.getElementById('textToAudioForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const data = {
+                text: formData.get('text'),
+                voice: formData.get('voice'),
+                speed: formData.get('speed')
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/text-to-audio', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const blob = await response.blob();
+                const audioUrl = URL.createObjectURL(blob);
+                const audioPlayer = document.getElementById('audioPlayer');
+                audioPlayer.src = audioUrl;
+                audioPlayer.play();
+
+                // Clear any previous response message
+                const responseMessage = document.getElementById('responseMessage');
+                responseMessage.innerHTML = '';
+
+            } catch (error) {
+                console.error('Error:', error);
+
+                // Display an error message
+                const responseMessage = document.getElementById('responseMessage');
+                responseMessage.innerHTML = `<p style="color: red;">Failed to convert text to audio. ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
