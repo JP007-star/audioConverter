@@ -9,5 +9,15 @@
     "playwright": "^1.46.1",
     "puppeteer": "^23.2.0",
     "puppeteer-core": "^23.2.0"
-  }
+  },
+  "name": "audioconverter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
