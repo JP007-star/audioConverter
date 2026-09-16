@@ -2,9 +2,11 @@
   "dependencies": {
     "@google-cloud/text-to-speech": "^5.4.0",
     "@google-cloud/translate": "^8.5.0",
+    "audioconverter": "file:",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "google-tts-api": "^2.0.2",
+    "microsoft-cognitiveservices-speech-sdk": "^1.51.0",
     "node-fetch": "^2.7.0",
     "playwright": "^1.46.1",
     "puppeteer": "^23.2.0",
@@ -13,7 +15,6 @@
   "name": "audioconverter",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

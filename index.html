@@ -54,12 +54,38 @@
 
             <label for="voice">Voice:</label>
             <select id="voice" name="voice">
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-                <option value="ta">Tamil</option>
-                <!-- Add more options as needed -->
+                <option value="en-male">English (Male)</option>
+                <option value="en-female">English (Female)</option>
+                <option value="es-male">Spanish (Male)</option>
+                <option value="es-female">Spanish (Female)</option>
+                <option value="fr-male">French (Male)</option>
+                <option value="fr-female">French (Female)</option>
+                <option value="de-male">German (Male)</option>
+                <option value="de-female">German (Female)</option>
+                <option value="ta-male">Tamil India (Male)</option>
+                <option value="ta-female">Tamil India (Female)</option>
+                <option value="ta-lk-male">Tamil Sri Lanka (Male)</option>
+                <option value="ta-lk-female">Tamil Sri Lanka (Female)</option>
+                <option value="ta-my-male">Tamil Malaysia (Male)</option>
+                <option value="ta-my-female">Tamil Malaysia (Female)</option>
+                <option value="ta-sg-male">Tamil Singapore (Male)</option>
+                <option value="ta-sg-female">Tamil Singapore (Female)</option>
+                <option value="te-male">Telugu (Male)</option>
+                <option value="te-female">Telugu (Female)</option>
+                <option value="kn-male">Kannada (Male)</option>
+                <option value="kn-female">Kannada (Female)</option>
+                <option value="ml-male">Malayalam (Male)</option>
+                <option value="ml-female">Malayalam (Female)</option>
+                <option value="ja-male">Japanese (Male)</option>
+                <option value="ja-female">Japanese (Female)</option>
+                <option value="ko-male">Korean (Male)</option>
+                <option value="ko-female">Korean (Female)</option>
+                <option value="hi-male">Hindi (Male)</option>
+                <option value="hi-female">Hindi (Female)</option>
+                <option value="zh-CN-male">Chinese (Simplified) Male</option>
+                <option value="zh-CN-female">Chinese (Simplified) Female</option>
+                <option value="ru-male">Russian (Male)</option>
+                <option value="ru-female">Russian (Female)</option>
             </select>
 
             <label for="speed">Speed:</label>
@@ -73,7 +99,7 @@
                 <option value="2">2x</option>
             </select>
 
-            <button type="submit">Convert to Audio</button>
+            <button type="button" id="convertBtn">Convert to Audio</button>
         </form>
 
         <h2>Audio Output</h2>
@@ -83,47 +109,54 @@
     </div>
 
     <script>
-        document.getElementById('textToAudioForm').addEventListener('submit', async (event) => {
-            event.preventDefault();
+        (function() {
+            const convertBtn = document.getElementById('convertBtn');
+            const textInput = document.getElementById('text');
+            const voiceInput = document.getElementById('voice');
+            const speedInput = document.getElementById('speed');
+            const audioPlayer = document.getElementById('audioPlayer');
+            const responseMessage = document.getElementById('responseMessage');
 
-            const formData = new FormData(event.target);
-            const data = {
-                text: formData.get('text'),
-                voice: formData.get('voice'),
-                speed: formData.get('speed')
-            };
+            convertBtn.addEventListener('click', async () => {
+                const text = textInput.value;
+                const voice = voiceInput.value;
+                const speed = speedInput.value;
 
-            try {
-                const response = await fetch('https://audioconverter-imi7.onrender.com/text-to-audio', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                if (!text) {
+                    responseMessage.innerHTML = '<p style="color: red;">Please enter some text.</p>';
+                    return;
                 }
 
-                const blob = await response.blob();
-                const audioUrl = URL.createObjectURL(blob);
-                const audioPlayer = document.getElementById('audioPlayer');
-                audioPlayer.src = audioUrl;
-                audioPlayer.play();
+                responseMessage.innerHTML = '<p>Converting... Please wait.</p>';
+                convertBtn.disabled = true;
 
-                // Clear any previous response message
-                const responseMessage = document.getElementById('responseMessage');
-                responseMessage.innerHTML = '';
+                try {
+                    const response = await fetch('http://localhost:3000/text-to-audio', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ text, voice, speed })
+                    });
 
-            } catch (error) {
-                console.error('Error:', error);
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
 
-                // Display an error message
-                const responseMessage = document.getElementById('responseMessage');
-                responseMessage.innerHTML = `<p style="color: red;">Failed to convert text to audio. ${error.message}</p>`;
-            }
-        });
+                    const blob = await response.blob();
+                    const audioUrl = URL.createObjectURL(blob);
+                    audioPlayer.src = audioUrl;
+                    audioPlayer.play();
+
+                    responseMessage.innerHTML = '';
+                } catch (error) {
+                    console.error('Error:', error);
+                    responseMessage.innerHTML = `<p style="color: red;">Failed to convert text to audio. ${error.message}</p>`;
+                } finally {
+                    convertBtn.disabled = false;
+                }
+            });
+        })();
     </script>
 </body>
 </html>
