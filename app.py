@@ -10,6 +10,8 @@ st.set_page_config(page_title="Text-to-Audio Converter", page_icon="🔊", layou
 VOICE_MAPPINGS = {
     "English (Male)": "en-US-ChristopherNeural",
     "English (Female)": "en-US-JennyNeural",
+    "Indian English (Male)": "en-IN-PrabhatNeural",
+    "Indian English (Female)": "en-IN-NeerjaNeural",
     "Spanish (Male)": "es-ES-AlvaroNeural",
     "Spanish (Female)": "es-ES-ElviraNeural",
     "French (Male)": "fr-FR-HenriNeural",
